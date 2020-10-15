@@ -1,3 +1,12 @@
+from util import base64_to_pil
+import numpy as np
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.models import load_model
+from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
+from tensorflow import keras
+from gevent.pywsgi import WSGIServer
+from werkzeug.utils import secure_filename
+from flask import Flask, redirect, url_for, request, render_template, Response, jsonify, redirect
 import os
 import sys
 
@@ -16,28 +25,15 @@ if gpus:
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Flask
-from flask import Flask, redirect, url_for, request, render_template, Response, jsonify, redirect
-from werkzeug.utils import secure_filename
-from gevent.pywsgi import WSGIServer
 
 # TensorFlow and tf.keras
-import tensorflow as tf
-from tensorflow import keras
 
-from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 
 # Some utilites
-import numpy as np
-from util import base64_to_pil
 
 
 # Declare a flask app
 app = Flask(__name__)
-
-
-
 
 
 # Model saved with Keras model.save()
@@ -45,10 +41,6 @@ MODEL_PATH = '../Models/Leukemia_Classifier'
 
 # Load your own trained model
 model = load_model(MODEL_PATH)
-
-
-
-
 
 
 def model_predict(img, model):
@@ -65,13 +57,10 @@ def model_predict(img, model):
     return inv_map[preds.argmax()]
 
 
-
 @app.route('/', methods=['GET'])
 def index():
     # Main page
-    return render_template('index.html')
-
-
+    return render_template('index.html', token="flask-react")
 
 
 @app.route('/predict', methods=['GET', 'POST'])
@@ -92,17 +81,18 @@ def predict():
         if preds == 'Normal':
             diagnosis['message'] = 'Leukemia not seen (NEGATIVE)'
             diagnosis['pathology'] = ['None']
-            diagnosis['actions'] = ['No Leukemic features seen. Results will auto-validate']
+            diagnosis['actions'] = [
+                'No Leukemic features seen. Results will auto-validate']
         elif preds == 'Leukemia':
             diagnosis['message'] = 'Leukemia Present (POSITIVE)'
-            diagnosis['pathology'] = ['Acute Myelogenous Leukemia (AML)', 'Acute Lymphocytic Leukemia (ALL)', 'Chronic Lymphocytic Leukemia (CLL)', 'Chronic Myelogenous Leukemia (CML)']
-            diagnosis['actions'] = ['Check patient history', 
-                                    'Review peripheral blood smear', 
-                                    'Check patients WBC count', 
-                                    'If first time treat as a critical and call to treating doctor immedietly', 
+            diagnosis['pathology'] = ['Acute Myelogenous Leukemia (AML)', 'Acute Lymphocytic Leukemia (ALL)',
+                                      'Chronic Lymphocytic Leukemia (CLL)', 'Chronic Myelogenous Leukemia (CML)']
+            diagnosis['actions'] = ['Check patient history',
+                                    'Review peripheral blood smear',
+                                    'Check patients WBC count',
+                                    'If first time treat as a critical and call to treating doctor immedietly',
                                     'Refer to pathologist']
 
-        
         # Serialize the result, you can add additional fields
         return jsonify(result=diagnosis)
 
