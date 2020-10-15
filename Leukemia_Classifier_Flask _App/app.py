@@ -99,5 +99,11 @@ def predict():
     return None
 
 
+@app.route('/test-route', methods=['GET', 'POST'])
+def testRoute():
+    if request.method == 'GET':
+        return jsonify('this is a test!')
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5003)

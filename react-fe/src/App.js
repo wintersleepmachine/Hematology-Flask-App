@@ -1,25 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Nav from './components/Nav';
+import Index from './components/Index';
+import axios from 'axios';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom';
 
 function App() {
+
+  const [state, setState] = useState({
+    test: ''
+  })
+
+  useEffect(() => {
+    axios.get('/test-route')
+      .then(res => {
+        console.log('res', res);
+        setState({ ...state, test: res.data })
+      })
+      .catch(err => {
+        console.log('err', err);
+      })
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="app-main-container">
+        <Nav />
+        <Switch>
+          <Route
+            path='/'
+            exact
+            render={props => (
+              <Index
+                {...props}
+              />
+            )}
+          />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
