@@ -12,7 +12,7 @@ import os
 import sys
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-
+import bcrypt
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
@@ -38,6 +38,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+# Database init
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'db.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -45,19 +46,22 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 
+# Database models
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100))
-    password = db.Column(db.String(100))
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), unique=True, nullable=False)
 
-    def __init__(self, email, password):
+    def __init__(self, name, email, password):
+        self.name = name
         self.email = email
         self.password = password
 
 
 class UsersSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'email', 'password')
+        fields = ('id', 'name', 'email', 'password')
 
 
 user_schema = UsersSchema()
@@ -129,15 +133,39 @@ def predict():
 
 @app.route('/register', methods=['POST'])
 def register_user():
+    name = request.json['name']
     email = request.json['email']
     password = request.json['password']
 
-    new_user = Users(email, password)
+    # hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    new_user = Users(name=name, email=email, password=hashed_password)
 
-    db.session.add(new_user)
-    db.session.commit()
+    # checks if email in db
+    check_user = Users.query.filter_by(email=email).first()
 
-    return user_schema.jsonify(new_user)
+    if check_user:
+        return 'email already taken'
+    else:
+        db.session.add(new_user)
+        db.session.commit()
+
+        return user_schema.jsonify(new_user)
+
+
+@app.route('/login', methods=['POST'])
+def login_user():
+    email = request.json['email']
+    password = request.json['password']
+
+    user = Users.query.filter_by(email=email).first()
+    if not user:
+        return 'User not found'
+
+    if bcrypt.checkpw(password.encode('utf-8'), user.password):
+        return user_schema.jsonify(user)
+    else:
+        return 'Wrong password'
 
 
 @app.route('/users', methods=['GET'])

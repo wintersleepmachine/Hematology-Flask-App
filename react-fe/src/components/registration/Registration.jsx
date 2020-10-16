@@ -4,6 +4,7 @@ import axios from 'axios';
 export default function Registration(props) {
 
   const [state, setState] = useState({
+    name: '',
     email: '',
     password: '',
     passwordConfirmation: '',
@@ -14,6 +15,7 @@ export default function Registration(props) {
     console.log('formState', state);
 
     axios.post('/register', {
+      name: state.name,
       email: state.email,
       password: state.password,
     }, {
@@ -36,6 +38,14 @@ export default function Registration(props) {
   return (
     <div className='registration-main-container'>
       <form onSubmit={(event) => handleSubmit(event)}>
+        <input
+          type="name"
+          name='name'
+          placeholder="Name"
+          value={state.name}
+          onChange={(event) => setState({ ...state, name: event.target.value })}
+          required
+        />
         <input
           type="email"
           name='email'
