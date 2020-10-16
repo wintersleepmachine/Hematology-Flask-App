@@ -13,7 +13,7 @@ export default function Index(props) {
   return (
     <div className='home-main-container'>
       Home!
-      {props.loggedInStatus && (
+      {props.loggedIn && (
         <button className='logout-btn' onClick={() => props.handleLogout()}>Logout</button>
       )}
     </div>

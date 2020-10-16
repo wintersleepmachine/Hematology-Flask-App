@@ -21,8 +21,8 @@ function App() {
     axios.get('/logged_in')
       .then(res => {
         console.log('loggedinRes', res);
-        if (JSON.stringify(res.data.userData) !== '{}') {
-          setState({ loggedInStatus: true, user: res.data })
+        if (res.data !== 'No user logged-in') {
+          setState({ loggedIn: true, user: res.data })
         }
       })
       .catch(err => {
@@ -32,7 +32,7 @@ function App() {
 
   function setSuccessfulUser(userData) {
     // console.log('set success user', userData);
-    setState({ ...state, loggedInStatus: true, user: userData })
+    setState({ ...state, loggedIn: true, user: userData })
   }
 
   function handleLogout() {
@@ -58,6 +58,7 @@ function App() {
               <Index
                 {...props}
                 handleLogout={handleLogout}
+                loggedIn={state.loggedIn}
               />
             )}
           />

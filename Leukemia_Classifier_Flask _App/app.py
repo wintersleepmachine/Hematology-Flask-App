@@ -181,7 +181,19 @@ def login_user():
 
 @app.route('/logged_in', methods=['GET'])
 def logged_in():
-    user_id = session['user_id']
+    if session:
+        user_id = session['user_id']
+        user = Users.query.filter_by(id=user_id).first()
+        return user_schema.jsonify(user)
+    else:
+        return 'No user logged-in'
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    if session:
+        session.pop('user_id', None)
+        return render_template('index.html', token="flask-react")
 
 
 @app.route('/users', methods=['GET'])

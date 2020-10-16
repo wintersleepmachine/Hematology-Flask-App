@@ -22,11 +22,15 @@ export default function Registration(props) {
       withCredentials: true
     })
       .then(res => {
+        if (res.data === 'email already taken') {
+          alert('email already taken!');
+          return;
+        }
         console.log('reg response', res);
         // set user in App
-        props.setSuccessfulUser(res.data[0]);
+        // props.setSuccessfulUser(res.data[0]);
         // redirect to Index
-        props.history.push('/');
+        props.history.push('/login');
       })
       .catch(err => {
         console.log('reg error', err);
