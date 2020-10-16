@@ -7,7 +7,7 @@ from tensorflow.keras.applications.imagenet_utils import preprocess_input, decod
 from tensorflow import keras
 from gevent.pywsgi import WSGIServer
 from werkzeug.utils import secure_filename
-from flask import Flask, redirect, url_for, request, render_template, Response, jsonify, redirect
+from flask import Flask, redirect, url_for, request, render_template, Response, jsonify, redirect, session
 import os
 import sys
 from flask_sqlalchemy import SQLAlchemy
@@ -44,6 +44,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
+# secret key for session
+app.secret_key = "2mv83gsa0nyw7474mvon667bbfkpka"
 
 
 # Database models
@@ -168,11 +171,17 @@ def login_user():
             return 'User not found'
 
         if bcrypt.checkpw(password.encode('utf-8'), user.password):
+            session['user_id'] = user.__dict__['id']
             return user_schema.jsonify(user)
         else:
             return 'Wrong password'
 
     return render_template('index.html', token="flask-react")
+
+
+@app.route('/logged_in', methods=['GET'])
+def logged_in():
+    user_id = session['user_id']
 
 
 @app.route('/users', methods=['GET'])
