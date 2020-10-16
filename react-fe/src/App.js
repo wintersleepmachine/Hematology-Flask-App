@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Nav from './components/Nav';
 import Index from './components/Index';
 import Registration from './components/registration/Registration';
+import Login from './components/login/Login';
 import axios from 'axios';
 import {
   BrowserRouter as Router,
@@ -17,19 +18,32 @@ function App() {
   })
 
   useEffect(() => {
-    axios.get('/test-route')
+    axios.get('/logged_in')
       .then(res => {
-        console.log('res', res);
-        setState({ ...state, test: res.data })
+        console.log('loggedinRes', res);
+        if (JSON.stringify(res.data.userData) !== '{}') {
+          setState({ loggedInStatus: true, user: res.data })
+        }
       })
       .catch(err => {
-        console.log('err', err);
+        console.log('logged in err', err);
       })
   }, []);
 
   function setSuccessfulUser(userData) {
     // console.log('set success user', userData);
     setState({ ...state, loggedInStatus: true, user: userData })
+  }
+
+  function handleLogout() {
+    axios.get('/logout')
+      .then(res => {
+        console.log('logout res', res);
+        setState({ loggedIn: false, user: {} })
+      })
+      .catch(err => {
+        console.log('logout err', err);
+      })
   }
 
   return (
@@ -43,6 +57,7 @@ function App() {
             render={props => (
               <Index
                 {...props}
+                handleLogout={handleLogout}
               />
             )}
           />
@@ -51,6 +66,16 @@ function App() {
             exact
             render={props => (
               <Registration
+                {...props}
+                setSuccessfulUser={setSuccessfulUser}
+              />
+            )}
+          />
+          <Route
+            path='/login'
+            exact
+            render={props => (
+              <Login
                 {...props}
                 setSuccessfulUser={setSuccessfulUser}
               />
