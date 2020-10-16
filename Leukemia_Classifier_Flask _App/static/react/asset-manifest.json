@@ -1,19 +1,26 @@
 {
   "files": {
-    "main.js": "/static/react/js/main.bcf47bf4.chunk.js",
-    "main.js.map": "/static/react/js/main.bcf47bf4.chunk.js.map",
+    "main.css": "/static/react/css/main.77659192.chunk.css",
+    "main.js": "/static/react/js/main.99d08a6b.chunk.js",
+    "main.js.map": "/static/react/js/main.99d08a6b.chunk.js.map",
     "runtime-main.js": "/static/react/js/runtime-main.514c39d8.js",
     "runtime-main.js.map": "/static/react/js/runtime-main.514c39d8.js.map",
-    "js/2.7210166e.chunk.js": "/static/react/js/2.7210166e.chunk.js",
-    "js/2.7210166e.chunk.js.map": "/static/react/js/2.7210166e.chunk.js.map",
+    "css/2.4f5bbb6b.chunk.css": "/static/react/css/2.4f5bbb6b.chunk.css",
+    "js/2.0264707b.chunk.js": "/static/react/js/2.0264707b.chunk.js",
+    "js/2.0264707b.chunk.js.map": "/static/react/js/2.0264707b.chunk.js.map",
     "../../templates/index.html": "/static/react/../../templates/index.html",
-    "js/2.7210166e.chunk.js.LICENSE.txt": "/static/react/js/2.7210166e.chunk.js.LICENSE.txt",
-    "precache-manifest.d2fa6e760ccaf8737a4827ab57d76026.js": "/static/react/precache-manifest.d2fa6e760ccaf8737a4827ab57d76026.js",
+    "css/2.4f5bbb6b.chunk.css.map": "/static/react/css/2.4f5bbb6b.chunk.css.map",
+    "css/main.77659192.chunk.css.map": "/static/react/css/main.77659192.chunk.css.map",
+    "js/2.0264707b.chunk.js.LICENSE.txt": "/static/react/js/2.0264707b.chunk.js.LICENSE.txt",
+    "media/index.css": "/static/react/media/roboto-vietnamese-400-normal.a8be5b46.woff2",
+    "precache-manifest.1eda8cc56b2a162f424a562d5aca7909.js": "/static/react/precache-manifest.1eda8cc56b2a162f424a562d5aca7909.js",
     "service-worker.js": "/static/react/service-worker.js"
   },
   "entrypoints": [
     "js/runtime-main.514c39d8.js",
-    "js/2.7210166e.chunk.js",
-    "js/main.bcf47bf4.chunk.js"
+    "css/2.4f5bbb6b.chunk.css",
+    "js/2.0264707b.chunk.js",
+    "css/main.77659192.chunk.css",
+    "js/main.99d08a6b.chunk.js"
   ]
 }

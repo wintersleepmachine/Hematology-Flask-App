@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
+import 'fontsource-roboto';
 import Nav from './components/Nav';
 import Index from './components/Index';
 import Registration from './components/registration/Registration';
