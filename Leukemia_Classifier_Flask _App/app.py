@@ -1,3 +1,4 @@
+import tensorflow as tf
 from util import base64_to_pil
 import numpy as np
 from tensorflow.keras.preprocessing import image
@@ -9,9 +10,10 @@ from werkzeug.utils import secure_filename
 from flask import Flask, redirect, url_for, request, render_template, Response, jsonify, redirect
 import os
 import sys
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 
-import tensorflow as tf
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
@@ -34,6 +36,32 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Declare a flask app
 app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+    os.path.join(basedir, 'db.sqlite')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
+
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100))
+    password = db.Column(db.String(100))
+
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
+
+
+class UsersSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'email', 'password')
+
+
+user_schema = UsersSchema()
+# users_schema = UsersSchema(many=True, strict=True)
 
 
 # Model saved with Keras model.save()
@@ -99,11 +127,19 @@ def predict():
     return None
 
 
-@app.route('/test-route', methods=['GET', 'POST'])
-def testRoute():
-    if request.method == 'GET':
-        return jsonify('this is a test!')
+@app.route('/register', methods=['POST'])
+def register_user():
+    email = request.json['email']
+    password = request.json['password']
+
+    new_user = Users(email, password)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return user_schema.jsonify(new_user)
 
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True, port=5003)

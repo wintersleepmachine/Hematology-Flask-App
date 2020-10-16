@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Nav from './components/Nav';
 import Index from './components/Index';
+import Registration from './components/registration/Registration';
 import axios from 'axios';
 import {
   BrowserRouter as Router,
@@ -11,7 +12,8 @@ import {
 function App() {
 
   const [state, setState] = useState({
-    test: ''
+    loggedIn: false,
+    user: {}
   })
 
   useEffect(() => {
@@ -23,7 +25,12 @@ function App() {
       .catch(err => {
         console.log('err', err);
       })
-  }, [])
+  }, []);
+
+  function setSuccessfulUser(userData) {
+    // console.log('set success user', userData);
+    setState({ ...state, loggedInStatus: true, user: userData })
+  }
 
   return (
     <Router>
@@ -36,6 +43,16 @@ function App() {
             render={props => (
               <Index
                 {...props}
+              />
+            )}
+          />
+          <Route
+            path='/registration'
+            exact
+            render={props => (
+              <Registration
+                {...props}
+                setSuccessfulUser={setSuccessfulUser}
               />
             )}
           />
