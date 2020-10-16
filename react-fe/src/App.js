@@ -62,7 +62,7 @@ function App() {
             )}
           />
           <Route
-            path='/registration'
+            path='/register'
             exact
             render={props => (
               <Registration

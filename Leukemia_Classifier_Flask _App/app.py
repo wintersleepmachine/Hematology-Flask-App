@@ -131,41 +131,48 @@ def predict():
     return None
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register_user():
-    name = request.json['name']
-    email = request.json['email']
-    password = request.json['password']
+    if request.method == 'POST':
+        name = request.json['name']
+        email = request.json['email']
+        password = request.json['password']
 
-    # hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-    new_user = Users(name=name, email=email, password=hashed_password)
+        # hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        hashed_password = bcrypt.hashpw(
+            password.encode('utf-8'), bcrypt.gensalt())
+        new_user = Users(name=name, email=email, password=hashed_password)
 
-    # checks if email in db
-    check_user = Users.query.filter_by(email=email).first()
+        # checks if email in db
+        check_user = Users.query.filter_by(email=email).first()
 
-    if check_user:
-        return 'email already taken'
-    else:
-        db.session.add(new_user)
-        db.session.commit()
+        if check_user:
+            return 'email already taken'
+        else:
+            db.session.add(new_user)
+            db.session.commit()
 
-        return user_schema.jsonify(new_user)
+            return user_schema.jsonify(new_user)
+
+    return render_template('index.html', token="flask-react")
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login_user():
-    email = request.json['email']
-    password = request.json['password']
+    if request.method == 'POST':
+        email = request.json['email']
+        password = request.json['password']
 
-    user = Users.query.filter_by(email=email).first()
-    if not user:
-        return 'User not found'
+        user = Users.query.filter_by(email=email).first()
+        if not user:
+            return 'User not found'
 
-    if bcrypt.checkpw(password.encode('utf-8'), user.password):
-        return user_schema.jsonify(user)
-    else:
-        return 'Wrong password'
+        if bcrypt.checkpw(password.encode('utf-8'), user.password):
+            return user_schema.jsonify(user)
+        else:
+            return 'Wrong password'
+
+    return render_template('index.html', token="flask-react")
 
 
 @app.route('/users', methods=['GET'])
