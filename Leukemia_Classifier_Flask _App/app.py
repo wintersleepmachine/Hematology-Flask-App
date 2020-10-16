@@ -140,6 +140,13 @@ def register_user():
     return user_schema.jsonify(new_user)
 
 
+@app.route('/users', methods=['GET'])
+def get_all_users():
+    all_users = Users.query.all()
+    result = user_schema.dump(all_users)
+    return jsonify(result)
+
+
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True, port=5003)
