@@ -5,7 +5,7 @@ This repository contains 4 different computer vision applications utilizing one 
   1. White blood cell classifier (multi-class classification)
   2. Red blood cell classifier (multi-class classification)
   3. Leukemia classifier (binary classification)
-  
+  4. White blood cell differential
 The models frame work were build with a mixture of convolutional and dense layers on images of peripheral blood smears. The resulting model had about 70,000 trainable parameters.
 
 
