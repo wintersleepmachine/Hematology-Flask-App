@@ -11,3 +11,22 @@ The models frame work were build with a mixture of convolutional and dense layer
 
 ## Metrics
 The total images trained on are about roughtly 15,000 images and managed to attain an training accuracy of 94% and a validation accuracy of 89%.
+
+
+## Demo
+
+### White Blood Cell Classifier
+![](wbc_classifier.gif)
+
+
+### White Blood Cell Differential
+Takes in ~100 images of white blood cells and sends the image data to the back end where the model makes a prediction for each image and tallys up the different proportions of white blood cells. 
+![](wbc_differential.gif)
+
+
+### Red Blood Cell Morphology Classifier
+![](RBC_morphology.gif)
+
+
+### Leukemia Classifer
+![](leukemia.gif)
