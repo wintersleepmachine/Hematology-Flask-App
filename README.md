@@ -20,7 +20,7 @@ The total images trained on are about roughtly 15,000 images and managed to atta
 
 
 ### White Blood Cell Differential
-Takes in ~100 images of white blood cells and sends the image data to the back end where the model makes a prediction for each image and tallys up the different proportions of white blood cells. 
+Takes in ~100 images of white blood cells and sends the image data to the back end where the model makes a prediction for each image and tallys up the different proportions of white blood cells. Catches any abnormalities and outputs possible pathologies.
 ![](wbc_differential.gif)
 
 
